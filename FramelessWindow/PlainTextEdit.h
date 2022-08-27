@@ -5,12 +5,18 @@
 
 #include <QFont>
 #include <QPlainTextEdit>
-#include <QScrollBar>
 
 class PlainTextEdit : public QPlainTextEdit
 {
+    Q_OBJECT
 public:
     PlainTextEdit();
+    QFont codeFont;
+
+public slots:
+    void SendTextToFile();
+signals:
+    SendText(QString Text);//发送文本给文件保存函数
 };
 
 #endif // PLAINTEXTEDIT_H

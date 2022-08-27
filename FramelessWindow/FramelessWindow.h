@@ -20,7 +20,7 @@
 #include "FileNameLabel.h"
 #include "PlainTextEdit.h"
 #include "FileList.h"
-
+#include"fileoperation.h"
 // 主体窗口
 
 class FramelessWindowPrivate;
@@ -42,12 +42,13 @@ public:
     PlainTextEdit *plainTextEdit; //当前文本框
     FileList *fileList; //当前文件列表
 
-    void setFileName(QString);
+
 
 private:
     FramelessWindowPrivate *d;
 private slots:
     void maxScreen();
+    void setFileName(QString);
 };
 
 #endif // FRAMELESSWINDOW_H

@@ -24,9 +24,14 @@ FramelessWindow::FramelessWindow(QWidget *parent) : QWidget(parent) {
     connect(screenButton->minButton, &QPushButton::clicked, this, &QWidget::showMinimized);
     connect(screenButton->maxButton, &QPushButton::clicked, this, &FramelessWindow::maxScreen);
 
+    // 左侧的文件列表（未完成）
+    fileList = new FileList();
+    // 右侧的编辑器
+    plainTextEdit = new PlainTextEdit();
 
     // 测试用，显示一个文件名
-    setFileName("FileName.c");
+    //setFileName("FileName.c");
+    fileName="FileName.c";
     // 顶端中部显示文件名
     fileNameLabel = new FileNameLabel(fileName);
 
@@ -37,6 +42,11 @@ FramelessWindow::FramelessWindow(QWidget *parent) : QWidget(parent) {
     MainMenu* fileMenu = new MainMenu();
     fileButton->setMenu(fileMenu);
     // 菜单里的数个选项
+    //add,新建文件
+    QAction* newFileAction = new QAction(this);
+    fileMenu->addAction(newFileAction);
+    newFileAction->setText(tr("New"));
+    //
     QAction* openFileAction = new QAction(this);
     fileMenu->addAction(openFileAction);
     openFileAction->setText(tr("Open"));
@@ -49,11 +59,19 @@ FramelessWindow::FramelessWindow(QWidget *parent) : QWidget(parent) {
     QAction* saveAsAction = new QAction(this);
     fileMenu->addAction(saveAsAction);
     saveAsAction->setText(tr("Save As"));
-    connect(openFileAction, SIGNAL(triggered()), this, SLOT());
-    connect(closeFileAction, SIGNAL(triggered()), this, SLOT());
-    connect(saveFileAction, SIGNAL(triggered()), this, SLOT());
-    connect(saveAsAction, SIGNAL(triggered()), this, SLOT());
+    connect(newFileAction, SIGNAL(triggered()), fileList, SLOT(NewFile()));//新建
+    connect(openFileAction, SIGNAL(triggered()), fileList, SLOT(OpenFile()));//打开
+    connect(closeFileAction, SIGNAL(triggered()), fileList, SLOT(Close()));//关闭
+    connect(saveFileAction, SIGNAL(triggered()), fileList, SLOT(Save()));//保存
+    connect(saveAsAction, SIGNAL(triggered()), fileList, SLOT(SaveAs()));//另存
 
+    connect(plainTextEdit,SIGNAL(textChanged()),fileList,SLOT(SetCurrentFilemodified()));//编辑区做出修改
+
+    connect(fileList,SIGNAL(LoadData(QString)),plainTextEdit,SLOT(setPlainText(QString)));//打开文件
+    connect(fileList,SIGNAL(ClearText()),plainTextEdit,SLOT(clear()));//关闭或新建
+    connect(fileList,SIGNAL(GetText()),plainTextEdit,SLOT(SendTextToFile()));//保存文件，需要编辑区发送文本
+    connect(plainTextEdit,SIGNAL(SendText(QString)),fileList,SLOT(GetPlainText(QString)));//编辑区发送文本内容
+    connect(fileList,SIGNAL(SetTitle(QString)),this,SLOT(setFileName(QString)));//设置当前文件名
 
     // 创建MenuButton类对象，分别对应每一个菜单栏按钮
     MenuButton* buildButton = new MenuButton("  Build");
@@ -87,10 +105,7 @@ FramelessWindow::FramelessWindow(QWidget *parent) : QWidget(parent) {
 
     layout->addWidget(menuWidget);
 
-    // 左侧的文件列表（未完成）
-    fileList = new FileList();
-    // 右侧的编辑器
-    plainTextEdit = new PlainTextEdit();
+
     // 编辑区布局，包括文件列表和编辑器
     QHBoxLayout *editRegion = new QHBoxLayout();
     editRegion->addWidget(fileList);
@@ -143,5 +158,5 @@ void FramelessWindow::maxScreen()
 // 文件名的setter
 void FramelessWindow::setFileName(QString name)
 {
-    this->fileName = name;
+    this->fileNameLabel->setText(name);
 }
