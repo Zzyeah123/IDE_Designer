@@ -4,8 +4,11 @@
 // 文件列表部件类
 
 #include <QWidget>
+#include <QListWidget>
+#include <QScrollBar>
+#include <QFont>
 
-class FileList : public QWidget
+class FileList : public QListWidget
 {
 public:
     FileList();

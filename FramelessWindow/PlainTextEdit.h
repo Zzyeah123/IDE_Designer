@@ -5,12 +5,12 @@
 
 #include <QFont>
 #include <QPlainTextEdit>
+#include <QScrollBar>
 
 class PlainTextEdit : public QPlainTextEdit
 {
 public:
     PlainTextEdit();
-    QFont codeFont;
 };
 
 #endif // PLAINTEXTEDIT_H
